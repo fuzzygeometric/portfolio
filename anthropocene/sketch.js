@@ -58,6 +58,8 @@ y-axis from 0 top left- edu
     stroke('blue');
     let button; 
     let description = "The co2 by itself is a guage on pollution. High co2 and high humidity is a guage on potential for climate change like heavier rainfall and more dangerous heatwaves. Those places will experience more changes in temperature weather. <br> <br> High co2 may be affected by internet and education level in that county, as determined by the regularity of the color gradient in the data map. <br> <br> You selected: " + county[i] + "<br> <br>The population is " + population[i] + ". The internet usage in households is " + internet[i] + "%. The education rate of adults over 25 is " + education[i] + "%. The emissions number is " + emissions[i] + ". <br>The humidity is " + humidity[i] + "%. The average temperature is " + temp[i] + "*F. <br> <br> <br>For the average US county:<br>The population of these 3143 counties is 327,622,586. The internet usage in households is average 70.4% having a device. The education rate of adults over 25 is 15.6%. The average emissions number is 81.2 and the total is 2528. The average  humidity is 77.6%. The average temperature is 44.5*F.";
+  button = createButton('click me');
+  button.position(x, y);
     circle(x, y, 9);
         //to do: color gradient - emissions
     fill('black');
