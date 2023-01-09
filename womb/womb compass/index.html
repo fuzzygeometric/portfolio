@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <meta charset="utf-8" />
+  <title>the (womb) compass</title>
+</head>
+
+<body>
+  
+  <h1>The (womb) Compass</h1>
+  by danielle Gauthier<br>
+  <br>
+  To use this meditative program, enter an origin, issue, or purpose in the first textbox below. This is your recepticle, as it derives directionality for you in relation to your origin. Make the following references in their associated textboxes. When you press the expose button, the suggested directions use your inputs and can be used to escape discomfort conformally.
+  <br>
+  <br>
+  
+  <!--make a table to label the points for mapping with input textboxes-->
+  <form>
+  <table>
+  <tr>
+    <th>origin</th>
+    <th>issue</th>
+    <th>purpose</th>
+    <th><input id="command" rows="1" value="the problem?"></th>
+  </tr>
+  <tr>
+    <td>base</td>
+    <td>space</td>
+    <td>make</td>
+    <td><input value="0" id = "0"></td>
+  </tr>
+   <tr>
+    <td>new</td>
+    <td>language</td>
+     <td>block</td>
+    <td><input value="1" id = "1"></td>
+  </tr> <tr>
+    <td>both</td>
+    <td>flow</td>
+    <td>glean</td>
+    <td><input value="2" id = "2"></td>
+  </tr> <tr>
+    <td>them</td>
+    <td>earth</td>
+    <td>grow</td>
+    <td><input value="3" id = "3"></td>
+  </tr> <tr>
+    <td>dimension</td>
+    <td>intimacy</td>
+    <td>cry</td>
+    <td><input value="4" id = "4"></td>
+  </tr> <tr>
+    <td>balance</td>
+    <td>absence</td>
+    <td>scale</td>
+    <td><input value="5" id = "5"></td>
+  </tr> <tr>
+    <td>chaos</td>
+    <td>chaos</td>
+    <td>shrink</td>
+    <td><input value="6" id = "6"></td>
+  </tr> <tr>
+    <td>light</td>
+    <td>energy</td>
+    <td>perch</td>
+    <td><input value="7" id = "7"></td>
+  </tr> <tr>
+    <td>object</td>
+    <td>growth</td>
+    <td>array</td>
+    <td><input value="8" id = "8"></td>
+  </tr> <tr>
+    <td>creativity</td>
+    <td>purpose</td>
+    <td>cheer</td>
+    <td><input value="9" id = "9"></td>
+  </tr> <tr>
+    <td>poem</td>
+    <td>flesh</td>
+    <td>place</td>
+    <td><input value="e" id = "e"></td>
+  </tr> <tr>
+    <td>end</td>
+    <td>separation</td>
+    <td>hide</td>
+    <td><input value="/" id = "d"></td>
+  </tr> <tr>
+    <td>name</td>
+    <td>subject</td>
+    <td>jump</td>
+    <td><input value="j" id = "j"></td>
+  </tr> <tr>
+    <td>intention</td>
+    <td>joke</td>
+    <td>meme</td>
+    <td><input value="fh" id = "fh"></td>
+  </tr> <tr>
+    <td>result</td>
+    <td>violence</td>
+    <td>drop</td>
+    <td><input value="kt" id = "kt"></td>
+  </tr> <tr>
+    <td>emotion</td>
+    <td>doubt</td>
+    <td>lose</td>
+    <td><input value="q" id = "q"></td>
+  </tr>
+    </table>
+    
+    <!--make a button to reveal the mapping-->
+     <br>directions: <span id="result"></span><br>
+      <input type="button" value="expose" onClick="expose()">
+    </form>
+    
+  <script>
+  //design a mapping of the input variables that preserves a general shape or meaning
+  //use the assigned name of the textarea to reveal the input variable 
+  function expose() {
+   document.getElementById("result").innerHTML = "<br>let's maybe use " + document.getElementById("0").value + " and " + document.getElementById("d").value + " to address the " + document.getElementById("kt").value + " as a " + document.getElementById("fh").value + ". <br>let's maybe use our " +  document.getElementById("7").value + " to " + document.getElementById("8").value + " " + document.getElementById("3").value + ". <br>let's maybe " + document.getElementById("2").value + " with " + document.getElementById("6").value + ". <br>let's maybe " + document.getElementById("j").value + " our " + document.getElementById("1").value + ". <br>let's maybe " + document.getElementById("q").value + " the " + document.getElementById("9").value + " with " + document.getElementById("4").value + ". <br>let's maybe give " + document.getElementById("e").value + " to " + document.getElementById("5").value + "."
+  }
+</script>
+
+  <br>
+ </body>
+</html>
