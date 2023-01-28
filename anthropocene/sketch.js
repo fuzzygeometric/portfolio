@@ -4,9 +4,9 @@ Sources: demo_3d by weidi
 How to Interact: Use an arduino kit to hook up an ultrasound and humidity module to this sketch. Sync to the program to find what county your space exhibits as currently. Reflect on the text describing the county and decide on a research topic from there.
 */
 
-let census;
+let census;let selection; let description;
 let county=[];let internet=[]; let education=[]; let population=[];
-let temp=[]; let humidity=[]; let emissions=[];
+let temp=[]; let humidity=[]; let emissions=[]; let state=[];
 let diameter = 9;
 let myCanvas;
 function preload() {
@@ -29,40 +29,59 @@ function setup() {
   cursor(HAND);
   textFont(font1);
   //get the basic info of the data, know your csv loaded from console
+    //load data with column variable names
   numRows = census.getRowCount();
   numCols = census.getColumnCount();
-  print("numRows "+numRows +" numCols "+numCols)
-   //load data with column variable names
-  for(let i=0; i<census.getRowCount(); i++){
-    county[i] = census.getString(i,0); //name column
-   internet[i] = census.getNum(i,1);
-   education[i] = census.getNum(i,2);
-  population[i] = census.getNum(i,3);
-    temp[i] = census.getNum(i,4);
-    humidity[i] = census.getNum(i,5);
-  emissions[i] = census.getNum(i,6); 
-  }
-  //make a drop down for your name column
-  sel = createSelect();
-  sel.position(50, 400);
-for(var i = 0; i < census.getRowCount(); i++) {
-county[i] = census.getString(i,0);
-    // Fill the options with all county names
-    sel.option(county[i]);
-}
-  //make the description pop up when you select a county
-  sel.changed(mySelectEvent);
-}
+  county = census.getColumn(0);
+  state = census.getColumn(1);
+  internet = census.getColumn(2);
+  education = census.getColumn(3);
+  population = census.getColumn(4);
+  temp = census.getColumn(5);
+  humidity = census.getColumn(6); 
+  emissions = census.getColumn(7);
+  print("numRows "+numRows +" numCols "+numCols);
+  print (internet);
+ 
 
-function mySelectEvent() {
-  for(let i=0; i<census.getRowCount();i++){ 
-      let description = "You selected: " + county[i] + ". The population is " + population[i] + ". The internet usage in households is " + internet[i] + "%. The education rate of adults over 25 is " + education[i] + "%. The emissions number is " + emissions[i] + ". The humidity is " + humidity[i] + "%. The average temperature is " + temp[i] + "*F. The emissions by itself is a guage on pollution. High co2 and high humidity is a guage on potential for climate change like heavier rainfall and more dangerous heatwaves. Those places will experience more changes in temperature weather. High co2 may be affected by internet and education level in that county, as determined by the regularity of the color gradient in the data map. For the average US county: The population of these 3143 counties is 327,622,586. The internet usage in households is average 70.4% having a device. The education rate of adults over 25 is 15.6%. The average emissions number is 81.2 and the total is 2528. The average  humidity is 77.6%. The average temperature is 44.5*F.";
-    let wrapWidth = 400;
-     textSize(15);
-    textAlign(LEFT);
-      text(description,50, 450, wrapWidth)
+  //make a drop down for your name column
+  sel = createSelect(); sel2 = createSelect();
+  sel.position(50, 400);
+   sel.option("State") 
+  sel.selected("State");
+    // Fill the options with a filter
+    for (i=1; i<numRows; i++){
+    sel.option(state[i], i);
     }
+
+  //make the description pop up when you select a county from the filtered list
+  sel.changed(changeState);
+     sel2.changed(changeCounty);
+   sel2.position(200, 400);
 }
+function changeState(){
+ sel2.remove(); //REMOVE SEL2 WHEN SELECTED STATE CHANGES
+  sel2 = createSelect(); // RECREATE SEL2
+  sel2.option("County"); // FIRST OPTION TO SHOW UP
+  sel2.position(200, 400); // RESET SEL2 POSITION
+  sel2.changed(changeCounty) // fill sel2
+  sel.position(50, 400);
+  for (i=1; i<numRows; i++){
+  if (state[i] == state[sel.selected()]){ //CHECK ALL ROWS AGAINST SELECTED VALUE THROUGH THE filter ARRAY
+      sel2.option(county[i]); // ADD filtered names TO SEL2
+    }
+
+}}
+function changeCounty() {
+  for (let i = 0; i < numRows; i++){ 
+   if (county[i] == sel2.selected()){ //when filtered name selected
+      selection = i;
+     console.log(selection);
+     
+    } //information about filtered name
+      description = "You selected: " + county[selection] + ". The population is " + population[selection] + ". The internet usage in households is " + internet[selection] + "%. The education rate of adults over 25 is " + education[selection] + "%. The emissions number is " + emissions[selection] + ". The humidity is " + humidity[selection] + "%. The average temperature is " + temp[selection] + "*F. The emissions by itself is a guage on pollution. High co2 and high humidity is a guage on potential for climate change like heavier rainfall and more dangerous heatwaves. Those places will experience more changes in temperature weather. High co2 may be affected by internet and education level in that county, as determined by the regularity of the color gradient in the data map. For the average US county: The population of these 3143 counties is 327,622,586. The internet usage in households is average 70.4% having a device. The education rate of adults over 25 is 15.6%. The average emissions number is 81.2 and the total is 2528. The average  humidity is 77.6%. The average temperature is 44.5*F.";
+    
+}}
   //graph the points
 function draw() {
   background(220);
@@ -72,12 +91,13 @@ function draw() {
 //y-axis from 0 top left- edu
  let canvasW = windowWidth;
   let canvasH = windowHeight*3;
-  for(let i=0; i<census.getRowCount();i++){
-    let x = map(internet[i], 15, 110, 0, canvasW);
-    let y = map(education[i], 0, 220, 0, canvasH);
+    
     //make the overlapping points more visible
     stroke('blue');
   //plot your points
+   for (i=1; i<numRows+1; i++){
+    let x = map(internet[i], 15, 110, 0, canvasW);
+    let y = map(education[i], 0, 220, 0, canvasH);
     circle(x, y, diameter);
         //to do: color gradient - emissions
     fill('black');
@@ -85,13 +105,11 @@ function draw() {
     textSize(20);
     textAlign(CENTER);
     text(county[i], x, y);
-    let description = "You selected: " + county[i] + ". The population is " + population[i] + ". The internet usage in households is " + internet[i] + "%. The education rate of adults over 25 is " + education[i] + "%. The emissions number is " + emissions[i] + ". The humidity is " + humidity[i] + "%. The average temperature is " + temp[i] + "*F. The emissions by itself is a guage on pollution. High co2 and high humidity is a guage on potential for climate change like heavier rainfall and more dangerous heatwaves. Those places will experience more changes in temperature weather. High co2 may be affected by internet and education level in that county, as determined by the regularity of the color gradient in the data map. For the average US county: The population of these 3143 counties is 327,622,586. The internet usage in households is average 70.4% having a device. The education rate of adults over 25 is 15.6%. The average emissions number is 81.2 and the total is 2528. The average  humidity is 77.6%. The average temperature is 44.5*F.";
-    //check mouse position against data points in for loop to display description
-  if (dist(mouseX, mouseY, x, y) < diameter/2){ 
-    let wrapWidth = 400;
+   }
+  let wrapWidth = 400;
      textSize(15);
     textAlign(LEFT);
       text(description,50, 450, wrapWidth)
-    }}
-}
+    }
+
 
