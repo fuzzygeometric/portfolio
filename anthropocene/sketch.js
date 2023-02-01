@@ -7,7 +7,8 @@ How to Interact: Use an arduino kit to hook up an ultrasound and humidity module
 let census;let selection; let description;
 let county=[];let internet=[]; let education=[]; let population=[];
 let temp=[]; let humidity=[]; let emissions=[]; let state=[];
-let diameter = 9;
+let diameter = 9; let serial;
+let latestData = "waiting for data";
 let myCanvas;
 function preload() {
   //my table is comma separated value "csv"
@@ -43,7 +44,22 @@ function setup() {
   print("numRows "+numRows +" numCols "+numCols);
   print (internet);
  
+serial = new p5.SerialPort();
 
+ serial.list();
+ serial.open('COM3');
+
+ serial.on('connected', serverConnected);
+
+ serial.on('list', gotList);
+
+ serial.on('data', gotData);
+
+ serial.on('error', gotError);
+
+ serial.on('open', gotOpen);
+
+ serial.on('close', gotClose);
   //make a drop down for your name column
   sel = createSelect(); sel2 = createSelect();
   sel.position(50, 400);
@@ -52,12 +68,17 @@ function setup() {
     // Fill the options with a filter
     for (i=1; i<numRows; i++){
     sel.option(state[i], i);
+      
+      
     }
 
   //make the description pop up when you select a county from the filtered list
   sel.changed(changeState);
      sel2.changed(changeCounty);
    sel2.position(200, 400);
+  
+  c1 = color(204, 102, 0);
+  c2 = color(0, 102, 153);
 }
 function changeState(){
  sel2.remove(); //REMOVE SEL2 WHEN SELECTED STATE CHANGES
@@ -93,14 +114,18 @@ function draw() {
   let canvasH = windowHeight*3;
     
     //make the overlapping points more visible
-    stroke('blue');
+    stroke('black');
   //plot your points
    for (i=1; i<numRows+1; i++){
     let x = map(internet[i], 15, 110, 0, canvasW);
     let y = map(education[i], 0, 220, 0, canvasH);
+     //let d = map(emissions[i], 0, 375, 0, canvasW);
     circle(x, y, diameter);
-        //to do: color gradient - emissions
-    fill('black');
+        //color gradient by emissions where low emissions is c2 teal and high is c1 orange
+    const l = map(emissions[i], 0, 375, 1, 0);
+    fill( lerpColor(c1, c2, l) );
+    circle(x, y, diameter);
+        
     //label by name column on mouseover
     textSize(20);
     textAlign(CENTER);
@@ -109,7 +134,62 @@ function draw() {
   let wrapWidth = 400;
      textSize(15);
     textAlign(LEFT);
-      text(description,50, 450, wrapWidth)
+      text(description,50, 450, wrapWidth);
+  text(latestData, 50, 350, 200);
+ // Polling method
+ /*
+ if (serial.available() > 0) {
+  let data = serial.read();
+  ellipse(50,50,data,data);*/
+ 
     }
+//map colors to emissions values
+function setGradient(x, y, w, h, c1, c2, axis) {
+  noFill();
+for (i=1; i<numRows; i++) {
+  if (axis === i) {
+    for (let d = emissions[i]; d <= emissions[i] + w; d++) {
+      let inter = map(d, w, x + w, 0, 1);
+      let c = lerpColor(c1, c2, inter);
+      stroke(c);
+      fill(c);
+      line(x, d, x + w, d);
+    }}}}
 
+
+
+
+function serverConnected() {
+ print("Connected to Server");
+}
+
+function gotList(thelist) {
+ print("List of Serial Ports:");
+
+ for (let i = 0; i < thelist.length; i++) {
+  print(i + " " + thelist[i]);
+ }
+}
+
+function gotOpen() {
+ print("Serial Port is Open");
+}
+
+function gotClose(){
+ print("Serial Port is Closed");
+ latestData = "Serial Port is Closed";
+}
+
+function gotError(theerror) {
+ print(theerror);
+}
+
+function gotData() {
+ let currentString = serial.readLine();
+  trim(currentString);
+ if (!currentString) return;
+ console.log(currentString);
+ latestData = currentString;
+
+}
 
